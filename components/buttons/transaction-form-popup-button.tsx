@@ -11,7 +11,7 @@ export const TransactionFormPopupButton = ({
     balanceId,
 }: {
     userId: string;
-    balanceId: string;
+    balanceId?: string;
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [balances, setBalances] = useState<Balance[]>([]);
@@ -36,7 +36,12 @@ export const TransactionFormPopupButton = ({
 
     return (
         <div>
-            <Button onClick={handleOpen}>Add Transaction</Button>
+            <Button
+                onClick={handleOpen}
+                className="bg-blue-600 text-white hover:text-black"
+            >
+                Add Transaction
+            </Button>
             <PopupOverlay isVisible={isOpen} onClose={handleClose}>
                 <div
                     style={{

@@ -5,7 +5,7 @@ import { Balance } from "@/lib/generated/prisma";
 
 interface NewTransactionFormProps {
     userId: string;
-    balanceId: string | undefined;
+    balanceId?: string;
     balances: Balance[];
     onClose?: () => void;
 }
@@ -45,78 +45,54 @@ export default function NewTransactionForm(props: NewTransactionFormProps) {
     return (
         <form
             onSubmit={onFormSubmit}
-            style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "15px",
-                padding: "20px",
-                border: "1px solid #eee",
-                borderRadius: "8px",
-            }}
+            className="flex flex-col gap-4 p-5 bg-white rounded-lg shadow-md border border-gray-200"
         >
-            <label
-                style={{ display: "flex", flexDirection: "column", gap: "5px" }}
-            >
-                Description:
+            <label className="flex flex-col gap-2">
+                <span className="text-sm font-medium text-gray-700">
+                    Description
+                </span>
                 <input
                     type="text"
                     name="description"
                     placeholder="e.g., Groceries, Rent, Salary"
                     required
-                    style={{
-                        padding: "8px",
-                        borderRadius: "4px",
-                        border: "1px solid #ccc",
-                    }}
+                    className="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
             </label>
-            <label
-                style={{ display: "flex", flexDirection: "column", gap: "5px" }}
-            >
-                Amount:
+            <label className="flex flex-col gap-2">
+                <span className="text-sm font-medium text-gray-700">
+                    Amount
+                </span>
                 <input
                     type="number"
                     name="amount"
                     step="0.01"
                     placeholder="e.g., 50.00"
+                    min={0}
                     required
-                    style={{
-                        padding: "8px",
-                        borderRadius: "4px",
-                        border: "1px solid #ccc",
-                    }}
+                    className="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
             </label>
-            <label
-                style={{ display: "flex", flexDirection: "column", gap: "5px" }}
-            >
-                Type:
+            <label className="flex flex-col gap-2">
+                <span className="text-sm font-medium text-gray-700">Type</span>
                 <select
                     name="type"
                     required
-                    style={{
-                        padding: "8px",
-                        borderRadius: "4px",
-                        border: "1px solid #ccc",
-                    }}
+                    className="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
                     <option value="INCOME">Income</option>
                     <option value="EXPENSE">Expense</option>
                 </select>
             </label>
-            <label
-                style={{ display: "flex", flexDirection: "column", gap: "5px" }}
-            >
-                Balance:
+            <label className="flex flex-col gap-2">
+                <span className="text-sm font-medium text-gray-700">
+                    Balance
+                </span>
                 <select
                     name="balanceId"
                     required
                     defaultValue={props.balanceId || props.balances[0]?.id}
-                    style={{
-                        padding: "8px",
-                        borderRadius: "4px",
-                        border: "1px solid #ccc",
-                    }}
+                    className="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
                     {props.balances.map((balance) => (
                         <option key={balance.id} value={balance.id}>
@@ -125,35 +101,21 @@ export default function NewTransactionForm(props: NewTransactionFormProps) {
                     ))}
                 </select>
             </label>
-            <label
-                style={{ display: "flex", flexDirection: "column", gap: "5px" }}
-            >
-                Date:
+            <label className="flex flex-col gap-2">
+                <span className="text-sm font-medium text-gray-700">Date</span>
                 <input
                     type="date"
                     name="date"
                     required
                     defaultValue={new Date().toISOString().split("T")[0]}
-                    style={{
-                        padding: "8px",
-                        borderRadius: "4px",
-                        border: "1px solid #ccc",
-                    }}
+                    className="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
             </label>
             <input type="hidden" name="categoryId" value="" />
 
             <button
                 type="submit"
-                style={{
-                    padding: "10px 15px",
-                    backgroundColor: "#007bff",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "5px",
-                    cursor: "pointer",
-                    fontSize: "1em",
-                }}
+                className="mt-2 px-4 py-2 bg-blue-600 text-white font-medium rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
             >
                 Add Transaction
             </button>

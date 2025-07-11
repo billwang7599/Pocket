@@ -32,3 +32,10 @@ export const balanceTotalMapping = async (
 
     return balanceMapping;
 };
+
+export const formatNumberToMoney = (number: number) => {
+    return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "CAD",
+    }).format(number);
+};

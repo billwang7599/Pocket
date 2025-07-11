@@ -23,7 +23,13 @@ export const BalanceFormPopupButton = ({
 
     return (
         <div>
-            <Button onClick={handleOpen}>Add New Balance</Button>
+            <Button
+                className="bg-blue-600 text-white hover:text-black"
+                onClick={handleOpen}
+            >
+                Add New Balance
+            </Button>
+
             <PopupOverlay isVisible={isOpen} onClose={handleClose}>
                 <div
                     style={{

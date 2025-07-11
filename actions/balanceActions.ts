@@ -194,3 +194,30 @@ export const getAllBalances = async (userId: string) => {
         throw error;
     }
 };
+
+export const deleteBalance = async (userId: string, balanceId: string) => {
+    try {
+        const balance = await prisma.balance.findUnique({
+            where: {
+                id: balanceId,
+                userId,
+            },
+        });
+
+        if (!balance) {
+            throw new Error(`Balance ${balanceId} not found`);
+        }
+
+        await prisma.balance.delete({
+            where: {
+                id: balanceId,
+                userId,
+            },
+        });
+        revalidatePath(`/balances/${balance.parentBalanceId}`); // Revalidate the parent balance page
+        return true;
+    } catch (error) {
+        console.error(`Error deleting balance ${balanceId}:`, error);
+        throw error;
+    }
+};

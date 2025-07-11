@@ -1,6 +1,6 @@
 "use server";
 import prisma from "@/lib/prisma";
-import { TransactionType } from "@/lib/generated/prisma";
+import { TransactionType, Transaction } from "@/lib/generated/prisma";
 import { updateBalanceAmount } from "@/actions/balanceActions";
 
 export const createTransaction = async (
@@ -62,10 +62,19 @@ export const deleteTransaction = async (userId: string, id: string) => {
 
 export const getBalanceTransactions = async (
     userId: string,
-    balanceId: string,
+    balanceId?: string,
 ) => {
-    const transactions = await prisma.transaction.findMany({
-        where: { userId, balanceId },
-    });
+    let transactions: Transaction[];
+    if (!balanceId) {
+        transactions = await prisma.transaction.findMany({
+            where: { userId },
+            orderBy: { date: "desc" },
+        });
+    } else {
+        transactions = await prisma.transaction.findMany({
+            where: { userId, balanceId },
+            orderBy: { date: "desc" },
+        });
+    }
     return transactions;
 };

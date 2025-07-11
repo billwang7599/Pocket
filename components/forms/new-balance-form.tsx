@@ -15,12 +15,11 @@ export default function NewBalanceForm(props: NewBalanceFormProps) {
         const formData = new FormData(event.currentTarget);
 
         const name = formData.get("name") as string;
-        const amount = Number(formData.get("amount"));
 
         // clear form
         event.currentTarget.reset();
 
-        await createBalance(props.userId, name, props.parentId, amount);
+        await createBalance(props.userId, name, props.parentId, 0);
 
         // Close popup if onClose prop is provided
         if (props.onClose) {
@@ -31,60 +30,22 @@ export default function NewBalanceForm(props: NewBalanceFormProps) {
     return (
         <form
             onSubmit={onFormSubmit}
-            style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "15px",
-                padding: "20px",
-                border: "1px solid #eee",
-                borderRadius: "8px",
-            }}
+            className="flex flex-col gap-4 p-5 bg-white rounded-lg shadow-md border border-gray-200"
         >
-            <label
-                style={{ display: "flex", flexDirection: "column", gap: "5px" }}
-            >
-                Name:
+            <label className="flex flex-col gap-2">
+                <span className="text-sm font-medium text-gray-700">Name</span>
                 <input
                     type="text"
                     name="name"
                     placeholder="e.g., Groceries, Savings, Kids Fund"
                     required
-                    style={{
-                        padding: "8px",
-                        borderRadius: "4px",
-                        border: "1px solid #ccc",
-                    }}
-                />
-            </label>
-            <label
-                style={{ display: "flex", flexDirection: "column", gap: "5px" }}
-            >
-                Amount:
-                <input
-                    type="number"
-                    name="amount"
-                    step="0.01"
-                    placeholder="e.g., 50.00"
-                    required
-                    style={{
-                        padding: "8px",
-                        borderRadius: "4px",
-                        border: "1px solid #ccc",
-                    }}
+                    className="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
             </label>
 
             <button
                 type="submit"
-                style={{
-                    padding: "10px 15px",
-                    backgroundColor: "#007bff",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "5px",
-                    cursor: "pointer",
-                    fontSize: "1em",
-                }}
+                className="mt-2 px-4 py-2 bg-blue-600 text-white font-medium rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
             >
                 Create Sub-Balance
             </button>

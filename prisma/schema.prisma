@@ -26,7 +26,7 @@ model Balance {
     updatedAt       DateTime      @updatedAt @db.Timestamptz(6)
     parentBalance   Balance?      @relation("BalanceToBalance", fields: [parentBalanceId], references: [id], onDelete: Cascade)
     childBalances   Balance[]     @relation("BalanceToBalance")
-    User            User          @relation(fields: [userId], references: [id])
+    User            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
     Transaction     Transaction[]
 
     @@index([parentBalanceId])
@@ -46,8 +46,8 @@ model Transaction {
     balanceId   String          @db.Uuid
     createdAt   DateTime        @default(now()) @db.Timestamptz(6)
     updatedAt   DateTime        @updatedAt @db.Timestamptz(6)
-    Balance     Balance         @relation(fields: [balanceId], references: [id])
-    User        User            @relation(fields: [userId], references: [id])
+    Balance     Balance         @relation(fields: [balanceId], references: [id], onDelete: Cascade)
+    User        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@index([balanceId])
     @@index([userId])
