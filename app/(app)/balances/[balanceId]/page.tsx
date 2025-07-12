@@ -14,14 +14,11 @@ import { redirect } from "next/navigation";
 import { DeleteBalanceButton } from "@/components/buttons/delete-balance-button";
 
 interface BalancePageProps {
-    params: {
-        balanceId: string; // The dynamic segment from the URL (e.g., /balances/abc-123 will have balanceId: 'abc-123')
-    };
-    // searchParams: { [key: string]: string | string[] | undefined }; // Query parameters are also available here
+    params: Promise<{ balanceId: string }>;
 }
 
 export default async function BalancePage({ params }: BalancePageProps) {
-    const { balanceId } = params;
+    const { balanceId } = await params;
     const supabase = await createClient();
     const { data } = await supabase.auth.getUser(); // should always be true since layout
     const userId = data.user!.id;
