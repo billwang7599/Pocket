@@ -20,6 +20,7 @@ export default async function DashboardPage() {
     );
     const balanceTotals = await balanceTotalMapping(userId, topBalances);
     const transactions = await getBalanceTransactions(userId);
+    console.log(transactions);
     const netWorth = topBalances.reduce(
         (acc, bal) => acc + balanceTotals[bal.id],
         0,

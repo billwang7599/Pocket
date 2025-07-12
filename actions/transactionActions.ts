@@ -68,12 +68,12 @@ export const getBalanceTransactions = async (
     if (!balanceId) {
         transactions = await prisma.transaction.findMany({
             where: { userId },
-            orderBy: { date: "desc" },
+            orderBy: [{ date: "desc" }, { updatedAt: "desc" }],
         });
     } else {
         transactions = await prisma.transaction.findMany({
             where: { userId, balanceId },
-            orderBy: { date: "desc" },
+            orderBy: [{ date: "desc" }, { updatedAt: "desc" }],
         });
     }
     return transactions;

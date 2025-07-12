@@ -2,9 +2,7 @@
 import { Button } from "../ui/button";
 import NewTransactionForm from "../forms/new-transaction-form";
 import { PopupOverlay } from "../popup-overlay";
-import { useState, useEffect } from "react";
-import { getAllBalances } from "@/actions/balanceActions";
-import { Balance } from "@/lib/generated/prisma";
+import { useState } from "react";
 
 export const TransactionFormPopupButton = ({
     userId,
@@ -14,17 +12,6 @@ export const TransactionFormPopupButton = ({
     balanceId?: string;
 }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [balances, setBalances] = useState<Balance[]>([]);
-
-    // Fetch balances when the component mounts
-    useEffect(() => {
-        const fetchBalances = async () => {
-            const fetchedBalances = await getAllBalances(userId);
-            setBalances(fetchedBalances);
-        };
-
-        fetchBalances();
-    }, [userId]);
 
     const handleOpen = () => {
         setIsOpen(true);
@@ -56,7 +43,6 @@ export const TransactionFormPopupButton = ({
                     <NewTransactionForm
                         userId={userId}
                         balanceId={balanceId}
-                        balances={balances}
                         onClose={handleClose}
                     />
                 </div>

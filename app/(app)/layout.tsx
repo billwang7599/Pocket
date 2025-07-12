@@ -1,7 +1,6 @@
 "use server";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import Navbar from "@/components/navbar";
 
 export default async function ProtectedLayout({
     children,
@@ -12,11 +11,10 @@ export default async function ProtectedLayout({
 
     const { data, error } = await supabase.auth.getUser();
     if (error || !data?.user) {
-        redirect("/auth/login");
+        redirect("/");
     }
     return (
-        <div>
-            <Navbar />
+        <div className="pt-16">
             <div className="m-16">{children}</div>
         </div>
     );
