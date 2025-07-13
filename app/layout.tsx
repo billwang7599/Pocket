@@ -17,10 +17,10 @@ export const metadata: Metadata = {
     appleWebApp: {
         title: "Pocket",
         statusBarStyle: "black-translucent",
-        capable: true,
+        capable: true, // This correctly sets <meta name="apple-mobile-web-app-capable" content="yes" />
     },
     icons: {
-        apple: [{ url: "/icons/apple-touch-icon.png" }],
+        apple: [{ url: "/icons/apple-touch-icon.png" }], // This correctly sets <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     },
     themeColor: "#2563eb",
 };
@@ -38,18 +38,6 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en" suppressHydrationWarning>
-            <head>
-                <link
-                    rel="apple-touch-icon"
-                    href="/icons/apple-touch-icon.png"
-                />
-                <meta name="apple-mobile-web-app-capable" content="yes" />
-                <meta
-                    name="apple-mobile-web-app-status-bar-style"
-                    content="black-translucent"
-                />
-                <meta name="apple-mobile-web-app-title" content="Pocket" />
-            </head>
             <body
                 className={`${geistSans.className} antialiased bg-white text-black min-h-screen`}
             >
