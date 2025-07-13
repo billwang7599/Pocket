@@ -9,6 +9,9 @@ lerna-debug.log*
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
+# Local development files
+.DS_Store
+
 # Runtime data
 pids
 *.pid
@@ -77,6 +80,7 @@ web_modules/
 # Next.js build output
 .next
 out
+.swc/
 
 # Nuxt.js build / generate output
 .nuxt
@@ -140,8 +144,14 @@ vite.config.ts.timestamp-*
 
 # Prisma
 lib/generated/
+.prisma/
 
 # PWA
 /public/sw.js
 /public/workbox-*.js
-/public/worker-*.js # If you have custom worker files
+/public/worker-*.js
+/public/sw.js.map
+/public/workbox-*.js.map
+/public/fallback-*.js
+/public/fallback-*.js.map
+# Do not ignore _headers file as it's a configuration file
