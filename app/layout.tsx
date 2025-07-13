@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import Navbar from "@/components/navbar";
+import PWABanner from "@/components/PWABanner";
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -108,6 +109,7 @@ export default function RootLayout({
                 >
                     <Navbar />
                     <main className="pt-16">{children}</main>
+                    <PWABanner />
                 </ThemeProvider>
             </body>
         </html>

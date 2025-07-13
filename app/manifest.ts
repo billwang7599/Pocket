@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
         short_name: "Pocket",
         description:
             "Your web-based budget app that makes budgeting simple and accessible cross platform",
-        start_url: "/",
+        start_url: "/dashboard",
         display: "standalone",
         display_override: ["standalone", "fullscreen", "minimal-ui"],
         orientation: "portrait",
