@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 import { PrismaPlugin } from "@prisma/nextjs-monorepo-workaround-plugin";
 
 const nextConfig: NextConfig = {
-    webpack: (config, { isServer }) => {
+    webpack: (config) => {
         config.plugins.push(new PrismaPlugin());
         return config;
     },

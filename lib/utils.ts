@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { Balance } from "@prisma/client";
+import { Balance } from "@/lib/generated/prisma/client";
 import { getBalanceTotal } from "@/actions/balanceActions";
 
 export function cn(...inputs: ClassValue[]) {
