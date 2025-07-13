@@ -6,10 +6,9 @@ export default function manifest(): MetadataRoute.Manifest {
         short_name: "Pocket",
         description:
             "Your web-based budget app that makes budgeting simple and accessible cross platform",
-        start_url: "/",
+        start_url: "/dashboard",
         display: "standalone",
         background_color: "#ffffff",
-        theme_color: "#2563eb",
         icons: [
             {
                 src: "/icons/icon-192x192.png",

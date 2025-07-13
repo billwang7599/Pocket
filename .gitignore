@@ -140,3 +140,8 @@ vite.config.ts.timestamp-*
 
 # Prisma
 lib/generated/
+
+# PWA
+/public/sw.js
+/public/workbox-*.js
+/public/worker-*.js # If you have custom worker files
