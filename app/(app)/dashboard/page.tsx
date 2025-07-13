@@ -28,13 +28,13 @@ export default async function DashboardPage() {
 
     return (
         <div className="flex flex-col gap-4">
-            <div className="mb-8">
-                <h3 className="text-2xl font-bold">Net Worth</h3>
-                <h1 className="text-4xl font-thin">
+            <div className="my-16">
+                <h3 className="text-4xl font-bold">Net Worth</h3>
+                <h1 className="text-5xl font-thin">
                     {formatNumberToMoney(netWorth)}
                 </h1>
             </div>
-            <div className="flex flex-row gap-4">
+            <div className="flex flex-row gap-4 mb-4">
                 <BalanceFormPopupButton userId={userId} parentId={null} />
                 <TransactionFormPopupButton userId={userId} />
             </div>

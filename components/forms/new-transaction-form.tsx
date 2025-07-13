@@ -3,7 +3,7 @@ import { createTransaction } from "@/actions/transactionActions";
 import { TransactionType } from "@/lib/generated/prisma";
 import { Balance } from "@/lib/generated/prisma";
 import { getAllBalances } from "@/actions/balanceActions";
-import { Loading } from "@/components/loading";
+import LoadingPage from "@/components/loading";
 import { useState, useEffect } from "react";
 import { useBalanceTotalStore } from "@/lib/states/totalMapping";
 import { useShallow } from "zustand/react/shallow";
@@ -64,10 +64,10 @@ export default function NewTransactionForm(props: NewTransactionFormProps) {
     return (
         <form
             onSubmit={onFormSubmit}
-            className="flex flex-col gap-4 p-5 bg-white rounded-lg shadow-md border border-gray-200"
+            className="flex flex-col gap-4 p-5 bg-white rounded-lg"
         >
             {!balances ? (
-                <Loading />
+                <LoadingPage />
             ) : (
                 <>
                     <label className="flex flex-col gap-2">

@@ -12,6 +12,7 @@ import { TransactionFormPopupButton } from "@/components/buttons/transaction-for
 import { formatNumberToMoney } from "@/lib/utils";
 import { redirect } from "next/navigation";
 import { DeleteBalanceButton } from "@/components/buttons/delete-balance-button";
+import Link from "next/link";
 
 interface BalancePageProps {
     params: Promise<{ balanceId: string }>;
@@ -33,16 +34,22 @@ export default async function BalancePage({ params }: BalancePageProps) {
 
     return (
         <div className="flex flex-col gap-4">
-            <div className="mb-8">
-                <h3 className="text-2xl font-bold">{balance.name}</h3>
-                <h1 className="text-4xl font-thin">
+            <Link
+                href={
+                    balance.parentBalanceId
+                        ? `/balances/${balance.parentBalanceId}`
+                        : "/dashboard"
+                }
+            >
+                Back
+            </Link>
+            <div className="mb-8 mt-4">
+                <h3 className="text-4xl font-bold">{balance.name}</h3>
+                <h1 className="text-5xl font-thin">
                     {formatNumberToMoney(total)}
                 </h1>
-                <p className="text-xl font-thin">
-                    {formatNumberToMoney(balance.amount)}
-                </p>
             </div>
-            <div className="flex flex-row gap-4">
+            <div className="flex flex-row flex-wrap gap-4 w-full mb-4">
                 <BalanceFormPopupButton userId={userId} parentId={balanceId} />
                 <TransactionFormPopupButton
                     userId={userId}

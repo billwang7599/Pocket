@@ -1,7 +1,7 @@
-export const Loading = () => {
+export default function LoadingPage() {
     return (
-        <div className="flex justify-center items-center h-full w-full">
-            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+        <div className="flex justify-center items-center w-full h-full">
+            <div className="animate-spin rounded-full h-10 w-10 border-4 border-gray-200 border-t-blue-600"></div>
         </div>
     );
-};
+}

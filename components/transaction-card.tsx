@@ -38,7 +38,13 @@ export const TransactionCard = async ({
                 </p>
             </div>
             <p className="text-lg font-thin">
-                {formatNumberToMoney(transaction.amount)}
+                <span
+                    className={
+                        transaction.type === "INCOME" ? "" : "text-red-500"
+                    }
+                >
+                    {formatNumberToMoney(transaction.amount)}
+                </span>
                 <span> → </span>
                 <a href={`/balances/${balance.id}`}>{balance.name}</a>
             </p>

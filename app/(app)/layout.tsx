@@ -14,8 +14,8 @@ export default async function ProtectedLayout({
         redirect("/");
     }
     return (
-        <div className="pt-16">
-            <div className="m-16">{children}</div>
+        <div>
+            <div className="m-8 md:m-16">{children}</div>
         </div>
     );
 }

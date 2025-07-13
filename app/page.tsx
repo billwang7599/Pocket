@@ -20,10 +20,10 @@ export default function Home() {
     return (
         <main className="min-h-screen flex flex-col items-center">
             {/* Hero Section */}
-            <section className="w-full bg-white py-12 md:py-24">
+            <section className="w-full bg-white py-24">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-12">
-                        <div className="flex-1">
+                        <div className="w-full md:flex-1">
                             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
                                 Simplify Your{" "}
                                 <span className="text-blue-600">Budget</span>{" "}
@@ -49,8 +49,8 @@ export default function Home() {
                                 </Link>
                             </div>
                         </div>
-                        <div className="flex-1">
-                            <div className="relative w-full h-[400px] rounded-lg shadow-xl bg-gray-100 overflow-hidden">
+                        <div className="w-full md:flex-1 mt-8 md:mt-0">
+                            <div className="relative w-full h-[300px] md:h-[400px] rounded-lg shadow-xl bg-gray-100 overflow-hidden">
                                 <div className="absolute inset-0 text-gray-400">
                                     <Image
                                         src="/images/dashboard.png"
@@ -59,6 +59,7 @@ export default function Home() {
                                         style={{
                                             objectFit: "cover",
                                             objectPosition: "left top",
+                                            display: "block",
                                         }}
                                         priority
                                     />

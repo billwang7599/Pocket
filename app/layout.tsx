@@ -28,7 +28,7 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning>
             <body
-                className={`${geistSans.className} antialiased bg-white text-black`}
+                className={`${geistSans.className} antialiased bg-white text-black min-h-screen`}
             >
                 <ThemeProvider
                     attribute="class"
@@ -36,10 +36,8 @@ export default function RootLayout({
                     enableSystem
                     disableTransitionOnChange
                 >
-                    <div className="fixed top-0 left-0 right-0 z-50">
-                        <Navbar />
-                    </div>
-                    {children}
+                    <Navbar />
+                    <main className="pt-16">{children}</main>
                 </ThemeProvider>
             </body>
         </html>

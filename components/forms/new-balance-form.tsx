@@ -30,7 +30,7 @@ export default function NewBalanceForm(props: NewBalanceFormProps) {
     return (
         <form
             onSubmit={onFormSubmit}
-            className="flex flex-col gap-4 p-5 bg-white rounded-lg shadow-md border border-gray-200"
+            className="flex flex-col gap-4 p-5 bg-white rounded-lg"
         >
             <label className="flex flex-col gap-2">
                 <span className="text-sm font-medium text-gray-700">Name</span>
