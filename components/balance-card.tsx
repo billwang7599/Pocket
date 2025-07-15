@@ -35,6 +35,7 @@ export const BalanceCard = ({ balance }: { balance: Balance }) => {
                 <>
                     <h3 className="text-lg font-medium text-left">
                         {balance.name
+                            .trim()
                             .split(" ")
                             .map(
                                 (word) =>

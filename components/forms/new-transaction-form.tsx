@@ -44,7 +44,7 @@ export default function NewTransactionForm(props: NewTransactionFormProps) {
         // Call your actual createTransaction Server Action with the correct parameters
         await createTransaction(
             amount,
-            description,
+            description.trim(),
             type,
             false, // dont use repeating transactions for now
             date,

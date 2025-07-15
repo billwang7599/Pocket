@@ -19,7 +19,7 @@ export default function NewBalanceForm(props: NewBalanceFormProps) {
         // clear form
         event.currentTarget.reset();
 
-        await createBalance(props.userId, name, props.parentId, 0);
+        await createBalance(props.userId, name.trim(), props.parentId, 0);
 
         // Close popup if onClose prop is provided
         if (props.onClose) {

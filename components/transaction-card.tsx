@@ -29,6 +29,7 @@ export const TransactionCard = async ({
             <div className="flex justify-between">
                 <h3 className="text-xl font-semibold">
                     {transaction.description
+                        .trim()
                         .split(" ")
                         .map((word) => word[0].toUpperCase() + word.slice(1))
                         .join(" ")}
