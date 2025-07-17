@@ -1,15 +1,15 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { NewBalanceForm } from "@/components/forms/new-balance-form";
-import { PopupOverlay } from "@/components/popup-overlay";
+import { Button } from "../ui/button";
+import { NewBalanceTransferForm } from "../forms/new-balance-transfer-form";
+import { PopupOverlay } from "../popup-overlay";
 import { useState } from "react";
 
-export const BalanceFormPopupButton = ({
+export const BalanceTransferPopupButton = ({
     userId,
-    parentId,
+    balanceId,
 }: {
     userId: string;
-    parentId?: string;
+    balanceId?: string;
 }) => {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -22,30 +22,31 @@ export const BalanceFormPopupButton = ({
     };
 
     return (
-        <div>
+        <>
             <Button
-                className="bg-blue-600 text-white hover:text-black"
                 onClick={handleOpen}
+                className="bg-blue-600 text-white hover:text-black"
             >
-                Add New Balance TEST
+                Transfer between balances
             </Button>
-
             <PopupOverlay isVisible={isOpen} onClose={handleClose}>
                 <div
                     style={{
+                        backgroundColor: "white",
                         borderRadius: "8px",
+                        padding: "20px",
                         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
                         maxWidth: "500px",
                         width: "100%",
                     }}
                 >
-                    <NewBalanceForm
+                    <NewBalanceTransferForm
                         userId={userId}
-                        parentId={parentId}
+                        balanceId={balanceId}
                         onClose={handleClose}
                     />
                 </div>
             </PopupOverlay>
-        </div>
+        </>
     );
 };

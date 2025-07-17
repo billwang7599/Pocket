@@ -5,6 +5,7 @@ import { getBalanceTransactions } from "@/actions/transactionActions";
 import { balanceTotalMapping } from "@/lib/utils";
 import { BalanceFormPopupButton } from "@/components/buttons/balance-form-popup-button";
 import { TransactionFormPopupButton } from "@/components/buttons/transaction-form-popup-button";
+import { BalanceTransferPopupButton } from "@/components/buttons/balance-transfer-popup-button";
 import { BalanceCard } from "@/components/balance-card";
 import { TransactionCard } from "@/components/transaction-card";
 import { formatNumberToMoney } from "@/lib/utils";
@@ -35,8 +36,9 @@ export default async function DashboardPage() {
                 </h1>
             </div>
             <div className="flex flex-row gap-4 mb-4">
-                <BalanceFormPopupButton userId={userId} parentId={null} />
+                <BalanceFormPopupButton userId={userId} />
                 <TransactionFormPopupButton userId={userId} />
+                <BalanceTransferPopupButton userId={userId} />
             </div>
             <div className="grid grid-cols-2 gap-4">
                 {topBalances.map((balance) => (

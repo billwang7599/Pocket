@@ -1,6 +1,6 @@
 "use server";
 import prisma from "@/lib/prisma";
-import { TransactionType, Transaction } from "@/lib/generated/prisma";
+import { TransactionType, Transaction, Balance } from "@/lib/generated/prisma";
 import { updateBalanceAmount } from "@/actions/balanceActions";
 
 export const createTransaction = async (
@@ -77,4 +77,33 @@ export const getBalanceTransactions = async (
         });
     }
     return transactions;
+};
+
+export const getAllTransactions = async (
+    userId: string,
+    balanceId: string,
+): Promise<Transaction[]> => {
+    // Find direct children
+    const children = await prisma.transaction.findMany({
+        where: { userId, balanceId },
+        orderBy: [{ date: "desc" }, { updatedAt: "desc" }],
+    });
+
+    const childBalances: Balance[] = await prisma.balance.findMany({
+        where: { parentBalanceId: balanceId },
+    });
+
+    // Recursively get descendants for each child
+    const descendantsArrays = await Promise.all(
+        childBalances.map((child) => getAllTransactions(userId, child.id)),
+    );
+
+    // Flatten the results and include direct children, in order
+    return children.concat(...descendantsArrays).sort((a, b) => {
+        if (a.date > b.date) return -1;
+        if (a.date < b.date) return 1;
+        if (a.updatedAt > b.updatedAt) return -1;
+        if (a.updatedAt < b.updatedAt) return 1;
+        return 0;
+    });
 };

@@ -6,7 +6,7 @@ import {
 import { createClient } from "@/lib/supabase/server";
 import { BalanceFormPopupButton } from "@/components/buttons/balance-form-popup-button";
 import { BalanceCard } from "@/components/balance-card";
-import { getBalanceTransactions } from "@/actions/transactionActions";
+import { getAllTransactions } from "@/actions/transactionActions";
 import { TransactionCard } from "@/components/transaction-card";
 import { TransactionFormPopupButton } from "@/components/buttons/transaction-form-popup-button";
 import { formatNumberToMoney } from "@/lib/utils";
@@ -30,7 +30,7 @@ export default async function BalancePage({ params }: BalancePageProps) {
     }
     const children = await getChildBalances(userId, balanceId);
     const total = await getBalanceTotal(userId, balanceId);
-    const transactions = await getBalanceTransactions(userId, balanceId);
+    const transactions = await getAllTransactions(userId, balanceId);
 
     return (
         <div className="flex flex-col gap-4">

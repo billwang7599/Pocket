@@ -18,7 +18,7 @@ export const BalanceCard = ({ balance }: { balance: Balance }) => {
     );
 
     useEffect(() => {
-        if (!getTotalBalance(balance.id)) update(balance.userId, balance.id);
+        update(balance.userId, balance.id);
     }, [balance, getTotalBalance, update]);
 
     const router = useRouter();

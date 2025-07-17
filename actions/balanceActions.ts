@@ -1,4 +1,5 @@
 "use server";
+import { Balance } from "@/lib/generated/prisma";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
@@ -49,58 +50,40 @@ export async function getBalanceTotal(
     userId: string,
     balanceId: string,
 ): Promise<number> {
-    try {
-        // Using a recursive Common Table Expression (CTE) to traverse the balance hierarchy
-        // This SQL query efficiently sums the 'amount' for the given balance and all its children.
-        const result = await prisma.$queryRaw<{ total_amount: number }[]>`
-            WITH RECURSIVE BalanceTree AS (
-                    -- Anchor Member: Selects the initial balance (the root of the sub-tree)
-                    SELECT
-                      id,
-                      "parentBalanceId",
-                      amount,
-                      "userId" -- Include userId here to filter descendants by owner if needed later
-                    FROM
-                      public.balances
-                    WHERE
-                      id = ${balanceId}::uuid AND "userId" = ${userId}::uuid
-                    UNION ALL
+    const currentBalance = await prisma.balance.findUnique({
+        where: {
+            id: balanceId,
+            userId,
+        },
+    });
 
-                    -- Recursive Member: Joins back to BalanceTree to find direct children
-                    SELECT
-                      b.id,
-                      b."parentBalanceId",
-                      b.amount,
-                      b."userId"
-                    FROM
-                      public.balances b
-                    INNER JOIN
-                      BalanceTree bt ON b."parentBalanceId" = bt.id
-                    WHERE b."userId" = ${userId}::uuid
-                  )
-                  -- Final SELECT: Sums the 'amount' for all balances in the collected tree
-                  SELECT COALESCE(SUM(amount), 0) AS total_amount
-                  FROM BalanceTree;
-    `;
-
-        // The queryRaw returns an array of objects. We expect one object with total_amount.
-        // Ensure the result is valid and extract the sum.
-        if (result && result.length > 0 && result[0].total_amount !== null) {
-            // Convert to a number as queryRaw might return Decimal or string depending on DB driver
-            return Number(result[0].total_amount);
-        }
-
-        // If no result or total_amount is null (e.g., balanceId not found)
-        return 0;
-    } catch (error) {
-        console.error(
-            `Error calculating total for balanceId ${balanceId}:`,
-            error,
+    if (!currentBalance) {
+        throw new Error(
+            `Balance not found for user ${userId} and balance ${balanceId}`,
         );
-        // Depending on your error handling strategy, you might re-throw,
-        // return null, or return 0. Returning 0 indicates failure to calculate.
-        return 0;
     }
+
+    const childBalances: Balance[] = await prisma.balance.findMany({
+        where: {
+            userId,
+            parentBalanceId: balanceId,
+        },
+    });
+
+    const promises: Promise<number>[] = childBalances.map(
+        async (childBalance) => {
+            return await getBalanceTotal(userId, childBalance.id);
+        },
+    );
+
+    const childTotals = await Promise.all(promises);
+
+    const total = childTotals.reduce(
+        (acc, curr) => acc + curr,
+        currentBalance.amount,
+    );
+
+    return total;
 }
 
 export const createBalance = async (
@@ -218,6 +201,40 @@ export const deleteBalance = async (userId: string, balanceId: string) => {
         return true;
     } catch (error) {
         console.error(`Error deleting balance ${balanceId}:`, error);
+        throw error;
+    }
+};
+
+export const renameBalance = async (
+    userId: string,
+    balanceId: string,
+    newName: string,
+) => {
+    try {
+        const balance = await prisma.balance.findUnique({
+            where: {
+                id: balanceId,
+                userId,
+            },
+        });
+
+        if (!balance) {
+            throw new Error(`Balance ${balanceId} not found`);
+        }
+
+        await prisma.balance.update({
+            where: {
+                id: balanceId,
+                userId,
+            },
+            data: {
+                name: newName.trim(),
+            },
+        });
+        revalidatePath(`/balances/${balance.parentBalanceId}`); // Revalidate the parent balance page
+        return true;
+    } catch (error) {
+        console.error(`Error renaming balance ${balanceId}:`, error);
         throw error;
     }
 };
