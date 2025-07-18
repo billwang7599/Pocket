@@ -18,6 +18,7 @@ export const createTransaction = async (
         type,
         isRepeating,
         date,
+        updatedAt: new Date(),
         userId,
         balanceId,
     };

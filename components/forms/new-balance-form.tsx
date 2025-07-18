@@ -16,11 +16,22 @@ export function NewBalanceForm(props: NewBalanceFormProps) {
 
         // clear form
         event.currentTarget.reset();
+        const userId = props.userId;
+        const balanceName = name.trim();
+        const parentId = props.parentId;
+        const amount = 0;
+        const currency = 0;
 
-        if (!props.parentId) {
-            await createBalance(props.userId, name.trim(), null, 0);
+        if (!parentId) {
+            await createBalance(userId, balanceName, null, amount, currency);
         } else {
-            await createBalance(props.userId, name.trim(), props.parentId, 0);
+            await createBalance(
+                userId,
+                balanceName,
+                parentId,
+                amount,
+                currency,
+            );
         }
 
         // Close popup if onClose prop is provided

@@ -359,7 +359,7 @@ model Currency {
 }
 
 model Transaction {
-  id          String          @id(map: "transactions_pkey") @db.Uuid
+  id          String          @id(map: "transactions_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   amount      Float
   description String
   type        TransactionType
@@ -368,7 +368,7 @@ model Transaction {
   userId      String          @db.Uuid
   balanceId   String          @db.Uuid
   createdAt   DateTime        @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime        @db.Timestamptz(6)
+  updatedAt   DateTime        @default(now()) @db.Timestamptz(6)
   Balance     Balance         @relation(fields: [balanceId], references: [id], onDelete: Cascade, map: "transactions_balanceId_fkey")
 
   @@index([balanceId], map: "transactions_balanceId_idx")
