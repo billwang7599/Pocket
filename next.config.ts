@@ -19,7 +19,7 @@ const withPWA = withPWAInit({
 
 /** @type {import("next").NextConfig} */
 const nextConfig: NextConfig = {
-    reactStrictMode: true, // Keep your existing strict mode
+    reactStrictMode: true,
     webpack: (config, { isServer }) => {
         // Apply PrismaPlugin only to the server build
         if (isServer) {
