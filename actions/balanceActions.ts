@@ -91,6 +91,7 @@ export const createBalance = async (
     name: string,
     parentBalanceId: string | null,
     amount: number,
+    currency: number,
 ) => {
     try {
         const balance = await prisma.balance.create({
@@ -99,6 +100,7 @@ export const createBalance = async (
                 name,
                 parentBalanceId,
                 amount,
+                currency,
             },
         });
         revalidatePath(`/balances/${parentBalanceId}`); // Revalidate the current balance page
@@ -151,6 +153,7 @@ export const updateBalanceAmount = async (
             },
             data: {
                 amount: currentAmount!.amount + change,
+                updatedAt: new Date(),
             },
         });
         revalidatePath(`/balances/${balance.parentBalanceId}`); // Revalidate the parent balance page
@@ -229,6 +232,7 @@ export const renameBalance = async (
             },
             data: {
                 name: newName.trim(),
+                updatedAt: new Date(),
             },
         });
         revalidatePath(`/balances/${balance.parentBalanceId}`); // Revalidate the parent balance page

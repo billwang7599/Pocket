@@ -12,6 +12,7 @@ import { TransactionFormPopupButton } from "@/components/buttons/transaction-for
 import { formatNumberToMoney } from "@/lib/utils";
 import { redirect } from "next/navigation";
 import { DeleteBalanceButton } from "@/components/buttons/delete-balance-button";
+import { InputBalanceTitle } from "@/components/input-balance-title";
 import Link from "next/link";
 
 interface BalancePageProps {
@@ -44,7 +45,7 @@ export default async function BalancePage({ params }: BalancePageProps) {
                 Back
             </Link>
             <div className="mb-8 mt-4">
-                <h3 className="text-4xl font-bold">{balance.name}</h3>
+                <InputBalanceTitle balance={balance} />
                 <h1 className="text-5xl font-thin">
                     {formatNumberToMoney(total)}
                 </h1>
