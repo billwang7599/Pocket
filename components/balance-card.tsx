@@ -10,12 +10,14 @@ export async function BalanceCard({ balance }: { balance: Balance }) {
         <Link
             href={`/balances/${balance.id}`}
             className={`rounded-lg shadow-md p-4 w-full h-full flex flex-col md:flex-row md:justify-between md:items-end hover:bg-gray-50 ${
-                !balance.active ? "opacity-60 border border-blue-300" : ""
+                !balance.active
+                    ? "opacity-70 border-2 border-blue-300 bg-blue-50"
+                    : ""
             }`}
         >
             <h3 className="text-lg font-medium text-left flex items-center gap-2">
                 {!balance.active && (
-                    <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-semibold">
+                    <span className="text-xs bg-blue-200 text-blue-800 px-2 py-0.5 rounded-full font-semibold border border-blue-300 shadow-sm">
                         Excluded
                     </span>
                 )}

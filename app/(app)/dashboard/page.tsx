@@ -1,5 +1,5 @@
 "use server";
-import { getTopBalances } from "@/actions/balanceActions";
+import { getTopBalances, getUserTotal } from "@/actions/balanceActions";
 import { getBalanceTransactions } from "@/actions/transactionActions";
 // import { balanceTotalMapping } from "@/lib/utils";
 import { BalanceFormPopupButton } from "@/components/buttons/balance-form-popup-button";
@@ -21,9 +21,7 @@ export default async function DashboardPage() {
         ),
     );
     const transactions = await getBalanceTransactions(user.id);
-    const netWorth = topBalances
-        .filter((balance) => balance.active)
-        .reduce((acc, balance) => acc + balance.amount, 0);
+    const netWorth = await getUserTotal(user.id);
 
     return (
         <div className="flex flex-col gap-4">

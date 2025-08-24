@@ -10,6 +10,7 @@ export const getTopBalances = async (userId: string): Promise<Balance[]> => {
     try {
         const balances = await prisma.balance.findMany({
             where: { userId, parentId: null },
+            orderBy: { active: "desc" },
         });
         return balances;
     } catch (error) {
@@ -41,13 +42,17 @@ export const getChildBalances = async (
  */
 export const getUserTotal = async (userId: string): Promise<number> => {
     try {
+        // Get active top-level balances
         const balances = await prisma.balance.findMany({
-            where: { userId, active: true },
+            where: { userId, active: true, parentId: null },
         });
-        const total = balances.reduce(
-            (acc, balance) => acc + balance.amount,
-            0,
-        );
+
+        // Calculate total by summing the total of each active top balance
+        // getBalanceTotal already includes the balance's own amount and active children
+        const total = await Promise.all(
+            balances.map((balance) => getBalanceTotal(userId, balance.id)),
+        ).then((totals) => totals.reduce((acc, curr) => acc + curr, 0));
+
         return total;
     } catch (error) {
         console.error("Error calculating user total:", error);
@@ -90,9 +95,11 @@ export async function getBalanceTotal(
             }),
         );
 
+        // If current balance is inactive, only sum children and don't include this balance's amount
+        const currentAmount = currentBalance.active ? currentBalance.amount : 0;
         const total = childTotals.reduce(
             (acc, curr) => acc + curr,
-            currentBalance.amount,
+            currentAmount,
         );
 
         return total;
