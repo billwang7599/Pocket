@@ -9,9 +9,16 @@ export async function BalanceCard({ balance }: { balance: Balance }) {
     return (
         <Link
             href={`/balances/${balance.id}`}
-            className="rounded-lg shadow-md p-4 w-full h-full flex flex-col md:flex-row md:justify-between md:items-end hover:bg-gray-50"
+            className={`rounded-lg shadow-md p-4 w-full h-full flex flex-col md:flex-row md:justify-between md:items-end hover:bg-gray-50 ${
+                !balance.active ? "opacity-60 border border-blue-300" : ""
+            }`}
         >
-            <h3 className="text-lg font-medium text-left">
+            <h3 className="text-lg font-medium text-left flex items-center gap-2">
+                {!balance.active && (
+                    <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-semibold">
+                        Excluded
+                    </span>
+                )}
                 {balance.name
                     .trim()
                     .split(" ")
