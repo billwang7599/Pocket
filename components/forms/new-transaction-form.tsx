@@ -46,7 +46,6 @@ export default function NewTransactionForm(props: NewTransactionFormProps) {
             amount,
             description.trim(),
             type,
-            false, // dont use repeating transactions for now
             date,
             props.userId,
             balanceId,
@@ -121,7 +120,8 @@ export default function NewTransactionForm(props: NewTransactionFormProps) {
                         >
                             {balances.map((balance) => (
                                 <option key={balance.id} value={balance.id}>
-                                    {balance.name} (${balance.amount})
+                                    {balance.name} (${balance.amount.toString()}
+                                    )
                                 </option>
                             ))}
                         </select>

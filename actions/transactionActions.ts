@@ -7,7 +7,6 @@ export const createTransaction = async (
     amount: number,
     description: string,
     type: TransactionType,
-    isRepeating: boolean,
     date: Date,
     userId: string,
     balanceId: string,
@@ -16,9 +15,7 @@ export const createTransaction = async (
         amount,
         description,
         type,
-        isRepeating,
         date,
-        updatedAt: new Date(),
         userId,
         balanceId,
     };
@@ -91,7 +88,7 @@ export const getAllTransactions = async (
     });
 
     const childBalances: Balance[] = await prisma.balance.findMany({
-        where: { parentBalanceId: balanceId },
+        where: { parentId: balanceId },
     });
 
     // Recursively get descendants for each child

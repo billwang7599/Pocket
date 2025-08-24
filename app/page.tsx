@@ -1,22 +1,8 @@
 "use client";
-import { createClient } from "@/lib/supabase/client";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation"; // for App Router
 import Link from "next/link";
 import Image from "next/image";
 
 export default function Home() {
-    const router = useRouter();
-    useEffect(() => {
-        async function fetchUser() {
-            const { data } = await createClient().auth.getUser();
-            if (data?.user) {
-                router.push("/dashboard");
-            }
-        }
-        fetchUser();
-    }, [router]);
-
     return (
         <main className="min-h-screen flex flex-col items-center">
             {/* Hero Section */}
@@ -36,7 +22,7 @@ export default function Home() {
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4">
                                 <Link
-                                    href="/auth/sign-up"
+                                    href="/auth/login"
                                     className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg px-6 py-3 text-center transition-colors"
                                 >
                                     Get Started Free

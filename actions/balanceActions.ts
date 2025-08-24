@@ -3,25 +3,31 @@ import { Balance } from "@/lib/generated/prisma";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
-export const getTopBalances = async (userId: string) => {
+/**
+ * Get top-level balances for a user (balances without a parent)
+ */
+export const getTopBalances = async (userId: string): Promise<Balance[]> => {
     try {
         const balances = await prisma.balance.findMany({
-            where: { userId, parentBalanceId: null },
+            where: { userId, parentId: null },
         });
         return balances;
     } catch (error) {
-        console.error("Error fetching user balances:", error);
+        console.error("Error fetching top balances:", error);
         throw error;
     }
 };
 
+/**
+ * Get child balances for a specific parent balance
+ */
 export const getChildBalances = async (
     userId: string,
-    parentBalanceId: string,
-) => {
+    parentId: string,
+): Promise<Balance[]> => {
     try {
         const balances = await prisma.balance.findMany({
-            where: { userId, parentBalanceId },
+            where: { userId, parentId },
         });
         return balances;
     } catch (error) {
@@ -30,7 +36,10 @@ export const getChildBalances = async (
     }
 };
 
-export const getUserTotal = async (userId: string) => {
+/**
+ * Get the total amount across all balances for a user
+ */
+export const getUserTotal = async (userId: string): Promise<number> => {
     try {
         const balances = await prisma.balance.findMany({
             where: { userId },
@@ -41,69 +50,89 @@ export const getUserTotal = async (userId: string) => {
         );
         return total;
     } catch (error) {
-        console.error("Error fetching user total:", error);
+        console.error("Error calculating user total:", error);
         throw error;
     }
 };
 
+/**
+ * Recursively calculate the total for a balance including all its children
+ */
 export async function getBalanceTotal(
     userId: string,
     balanceId: string,
 ): Promise<number> {
-    const currentBalance = await prisma.balance.findUnique({
-        where: {
-            id: balanceId,
-            userId,
-        },
-    });
+    try {
+        const currentBalance = await prisma.balance.findUnique({
+            where: {
+                id: balanceId,
+                userId,
+            },
+        });
 
-    if (!currentBalance) {
-        throw new Error(
-            `Balance not found for user ${userId} and balance ${balanceId}`,
+        if (!currentBalance) {
+            throw new Error(
+                `Balance not found for user ${userId} and balance ${balanceId}`,
+            );
+        }
+
+        const childBalances = await prisma.balance.findMany({
+            where: {
+                userId,
+                parentId: balanceId,
+            },
+        });
+
+        const childTotals = await Promise.all(
+            childBalances.map(async (childBalance) => {
+                return await getBalanceTotal(userId, childBalance.id);
+            }),
         );
+
+        const total = childTotals.reduce(
+            (acc, curr) => acc + curr,
+            currentBalance.amount,
+        );
+
+        return total;
+    } catch (error) {
+        console.error(
+            `Error calculating balance total for ${balanceId}:`,
+            error,
+        );
+        throw error;
     }
-
-    const childBalances: Balance[] = await prisma.balance.findMany({
-        where: {
-            userId,
-            parentBalanceId: balanceId,
-        },
-    });
-
-    const promises: Promise<number>[] = childBalances.map(
-        async (childBalance) => {
-            return await getBalanceTotal(userId, childBalance.id);
-        },
-    );
-
-    const childTotals = await Promise.all(promises);
-
-    const total = childTotals.reduce(
-        (acc, curr) => acc + curr,
-        currentBalance.amount,
-    );
-
-    return total;
 }
 
+/**
+ * Create a new balance
+ */
 export const createBalance = async (
     userId: string,
     name: string,
-    parentBalanceId: string | null,
+    parentId: string | null,
     amount: number,
-    currency: number,
-) => {
+    currencyId: number,
+): Promise<Balance> => {
     try {
         const balance = await prisma.balance.create({
             data: {
                 userId,
                 name,
-                parentBalanceId,
+                parentId,
                 amount,
-                currency,
+                currencyId,
             },
         });
-        revalidatePath(`/balances/${parentBalanceId}`); // Revalidate the current balance page
+
+        // Revalidate the parent balance page if it exists
+        if (parentId) {
+            revalidatePath(`/balances/${parentId}`);
+        }
+
+        // Always revalidate the balances page
+        revalidatePath("/balances");
+
         return balance;
     } catch (error) {
         console.error("Error creating balance:", error);
@@ -111,7 +140,13 @@ export const createBalance = async (
     }
 };
 
-export const getBalance = async (userId: string, balanceId: string) => {
+/**
+ * Get a specific balance by ID
+ */
+export const getBalance = async (
+    userId: string,
+    balanceId: string,
+): Promise<Balance | null> => {
     try {
         const balance = await prisma.balance.findUnique({
             where: {
@@ -126,23 +161,23 @@ export const getBalance = async (userId: string, balanceId: string) => {
     }
 };
 
+/**
+ * Update a balance's amount by adding/subtracting the specified change
+ */
 export const updateBalanceAmount = async (
     userId: string,
     balanceId: string,
     change: number,
-) => {
+): Promise<Balance> => {
     try {
-        const currentAmount = await prisma.balance.findUnique({
+        const currentBalance = await prisma.balance.findUnique({
             where: {
                 id: balanceId,
                 userId,
             },
-            select: {
-                amount: true,
-            },
         });
 
-        if (!currentAmount) {
+        if (!currentBalance) {
             throw new Error(`Balance ${balanceId} not found`);
         }
 
@@ -152,11 +187,20 @@ export const updateBalanceAmount = async (
                 userId,
             },
             data: {
-                amount: currentAmount!.amount + change,
+                amount: {
+                    increment: change,
+                },
                 updatedAt: new Date(),
             },
         });
-        revalidatePath(`/balances/${balance.parentBalanceId}`); // Revalidate the parent balance page
+
+        // Revalidate relevant paths
+        if (balance.parentId) {
+            revalidatePath(`/balances/${balance.parentId}`);
+        }
+        revalidatePath(`/balances/${balanceId}`);
+        revalidatePath("/balances");
+
         return balance;
     } catch (error) {
         console.error(`Error updating balance ${balanceId}:`, error);
@@ -164,7 +208,10 @@ export const updateBalanceAmount = async (
     }
 };
 
-export const getAllBalances = async (userId: string) => {
+/**
+ * Get all balances for a user
+ */
+export const getAllBalances = async (userId: string): Promise<Balance[]> => {
     try {
         const balances = await prisma.balance.findMany({
             where: {
@@ -176,12 +223,18 @@ export const getAllBalances = async (userId: string) => {
         });
         return balances;
     } catch (error) {
-        console.error(`Error fetching balances for user ${userId}:`, error);
+        console.error(`Error fetching all balances for user ${userId}:`, error);
         throw error;
     }
 };
 
-export const deleteBalance = async (userId: string, balanceId: string) => {
+/**
+ * Delete a balance
+ */
+export const deleteBalance = async (
+    userId: string,
+    balanceId: string,
+): Promise<boolean> => {
     try {
         const balance = await prisma.balance.findUnique({
             where: {
@@ -194,13 +247,21 @@ export const deleteBalance = async (userId: string, balanceId: string) => {
             throw new Error(`Balance ${balanceId} not found`);
         }
 
+        const parentId = balance.parentId;
+
         await prisma.balance.delete({
             where: {
                 id: balanceId,
                 userId,
             },
         });
-        revalidatePath(`/balances/${balance.parentBalanceId}`); // Revalidate the parent balance page
+
+        // Revalidate relevant paths
+        if (parentId) {
+            revalidatePath(`/balances/${parentId}`);
+        }
+        revalidatePath("/balances");
+
         return true;
     } catch (error) {
         console.error(`Error deleting balance ${balanceId}:`, error);
@@ -208,11 +269,14 @@ export const deleteBalance = async (userId: string, balanceId: string) => {
     }
 };
 
+/**
+ * Rename a balance
+ */
 export const renameBalance = async (
     userId: string,
     balanceId: string,
     newName: string,
-) => {
+): Promise<boolean> => {
     try {
         const balance = await prisma.balance.findUnique({
             where: {
@@ -235,7 +299,14 @@ export const renameBalance = async (
                 updatedAt: new Date(),
             },
         });
-        revalidatePath(`/balances/${balance.parentBalanceId}`); // Revalidate the parent balance page
+
+        // Revalidate relevant paths
+        if (balance.parentId) {
+            revalidatePath(`/balances/${balance.parentId}`);
+        }
+        revalidatePath(`/balances/${balanceId}`);
+        revalidatePath("/balances");
+
         return true;
     } catch (error) {
         console.error(`Error renaming balance ${balanceId}:`, error);

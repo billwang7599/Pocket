@@ -1,5 +1,4 @@
 "use server";
-import { createClient } from "@/lib/supabase/server";
 import { getTopBalances } from "@/actions/balanceActions";
 import { getBalanceTransactions } from "@/actions/transactionActions";
 import { balanceTotalMapping } from "@/lib/utils";
@@ -9,19 +8,20 @@ import { BalanceTransferPopupButton } from "@/components/buttons/balance-transfe
 import { BalanceCard } from "@/components/balance-card";
 import { TransactionCard } from "@/components/transaction-card";
 import { formatNumberToMoney } from "@/lib/utils";
+import { getUserbyAuth0Id } from "@/actions/userActions";
 
 export default async function DashboardPage() {
-    const supabase = await createClient();
-    const { data } = await supabase.auth.getUser(); // should always be true since layout
-    const userId = data.user!.id;
-    const topBalances = await getTopBalances(userId).then((balances) =>
+    const user = await getUserbyAuth0Id();
+    if (!user) {
+        return <div>User not found</div>;
+    }
+    const topBalances = await getTopBalances(user.id).then((balances) =>
         balances.sort((a, b) =>
             a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1,
         ),
     );
-    const balanceTotals = await balanceTotalMapping(userId, topBalances);
-    const transactions = await getBalanceTransactions(userId);
-    console.log(transactions);
+    const balanceTotals = await balanceTotalMapping(user.id, topBalances);
+    const transactions = await getBalanceTransactions(user.id);
     const netWorth = topBalances.reduce(
         (acc, bal) => acc + balanceTotals[bal.id],
         0,
@@ -32,21 +32,34 @@ export default async function DashboardPage() {
             <div className="my-16">
                 <h3 className="text-4xl font-bold">Net Worth</h3>
                 <h1 className="text-5xl font-thin">
-                    {formatNumberToMoney(netWorth)}
+                    {formatNumberToMoney(netWorth, "CAD")}
                 </h1>
             </div>
             <div className="flex flex-row gap-4 mb-4">
-                <BalanceFormPopupButton userId={userId} />
-                <TransactionFormPopupButton userId={userId} />
-                <BalanceTransferPopupButton userId={userId} />
+                <BalanceFormPopupButton
+                    userId={JSON.parse(JSON.stringify(user.id))}
+                />
+                <TransactionFormPopupButton
+                    userId={JSON.parse(JSON.stringify(user.id))}
+                />
+                <BalanceTransferPopupButton
+                    userId={JSON.parse(JSON.stringify(user.id))}
+                />
             </div>
-            <div className="grid grid-cols-2 gap-4">
-                {topBalances.map((balance) => (
-                    <div key={balance.id}>
-                        <BalanceCard balance={balance} />
-                    </div>
-                ))}
-            </div>
+            {topBalances.length == 0 ? (
+                <div className="text-center">
+                    <p>No balances found. Add a balance to start budgeting!</p>
+                </div>
+            ) : (
+                <div className="grid grid-cols-2 gap-4">
+                    {topBalances.map((balance) => (
+                        <div key={balance.id}>
+                            <BalanceCard balance={balance} />
+                        </div>
+                    ))}
+                </div>
+            )}
+
             <div className="flex flex-col gap-4 mt-8">
                 <h2 className="text-2xl font-bold">Transactions</h2>
                 {transactions.map((transaction) => (

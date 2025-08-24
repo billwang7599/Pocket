@@ -2,6 +2,7 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { Balance } from "@/lib/generated/prisma/client";
 import { getBalanceTotal } from "@/actions/balanceActions";
+import { getCurrencyById } from "@/lib/constants/currencies";
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -33,9 +34,20 @@ export const balanceTotalMapping = async (
     return balanceMapping;
 };
 
-export const formatNumberToMoney = (number: number) => {
+export const formatNumberToMoney = (number: number, currency: string) => {
     return new Intl.NumberFormat("en-US", {
         style: "currency",
-        currency: "CAD",
+        currency,
     }).format(number);
+};
+
+/**
+ * Format a number as currency using currency ID
+ */
+export const formatNumberToCurrency = (amount: number, currencyId: number) => {
+    const currency = getCurrencyById(currencyId);
+    return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: currency.code,
+    }).format(amount);
 };

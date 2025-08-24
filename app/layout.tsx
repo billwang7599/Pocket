@@ -2,7 +2,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
-import Navbar from "@/components/navbar";
+//import Navbar from "@/components/navbar";
 import PWABanner from "@/components/PWABanner";
 import "./globals.css";
 
@@ -107,7 +107,7 @@ export default function RootLayout({
                     enableSystem
                     disableTransitionOnChange
                 >
-                    <Navbar />
+                    {/* <Navbar /> */}
                     <main className="pt-16">{children}</main>
                     <PWABanner />
                 </ThemeProvider>

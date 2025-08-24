@@ -1,7 +1,5 @@
 "use server";
 
-import { LogoutButton } from "@/components/buttons/logout-button";
-
 export default async function SettingsPage() {
     return (
         <div className="flex flex-col gap-6 p-6 bg-white rounded-lg shadow-md max-w-3xl mx-auto">
@@ -17,7 +15,7 @@ export default async function SettingsPage() {
                     <h2 className="text-lg font-medium text-gray-700 mb-2">
                         Account
                     </h2>
-                    <LogoutButton />
+                    <a href="/auth/logout">Logout</a>
                 </div>
 
                 <div className="bg-gray-50 p-4 rounded-md">

@@ -1,20 +1,19 @@
 "use client";
 
+import { useUser } from "@auth0/nextjs-auth0";
+
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
 import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
 
 export default function Navbar() {
-    const supabase = createClient();
     const [authenticated, setAuthenticated] = useState(false);
-    const pathname = usePathname();
+    const { user, isLoading } = useUser();
 
     useEffect(() => {
-        supabase.auth.getUser().then((response) => {
-            setAuthenticated(response.data.user !== null);
-        });
-    }, [supabase, pathname]);
+        if (!isLoading) {
+            setAuthenticated(!!user);
+        }
+    }, [user, isLoading]);
 
     // Define navigation items based on authentication state
     const navItems = authenticated

@@ -1,38 +1,35 @@
 "use server";
-import { Transaction } from "@/lib/generated/prisma";
-import { formatNumberToMoney } from "@/lib/utils";
 import { getBalance } from "@/actions/balanceActions";
-import { createClient } from "@/lib/supabase/server";
+import { Transaction } from "@/lib/generated/prisma";
+import { formatNumberToCurrency } from "@/lib/utils";
+import Link from "next/link";
 
-export const TransactionCard = async ({
+export async function TransactionCard({
     transaction,
 }: {
     transaction: Transaction;
-}) => {
-    const supabase = await createClient();
+}) {
+    // Parse transaction properties to handle Decimal types
+    const amount =
+        typeof transaction.amount === "object" &&
+        "toNumber" in transaction.amount
+            ? transaction.amount
+            : Number(transaction.amount);
 
-    const { data, error } = await supabase.auth.getUser();
+    const balance = await getBalance(transaction.userId, transaction.balanceId);
 
-    if (error) {
-        console.error(error);
-        return null;
-    }
-
-    const balance = await getBalance(data.user.id, transaction.balanceId);
-    if (!balance) {
-        console.error("Balance not found");
-        return null;
-    }
+    // Format the description (capitalize first letter of each word)
+    const formattedDescription = transaction.description
+        .trim()
+        .split(" ")
+        .map((word) => (word ? word[0].toUpperCase() + word.slice(1) : ""))
+        .join(" ");
 
     return (
         <div className="flex flex-col border-b border-gray-200">
             <div className="flex justify-between">
                 <h3 className="text-xl font-semibold">
-                    {transaction.description
-                        .trim()
-                        .split(" ")
-                        .map((word) => word[0].toUpperCase() + word.slice(1))
-                        .join(" ")}
+                    {formattedDescription}
                 </h3>
                 <p className="text-sm text-gray-500">
                     {transaction.date.toDateString()}
@@ -44,11 +41,11 @@ export const TransactionCard = async ({
                         transaction.type === "INCOME" ? "" : "text-red-500"
                     }
                 >
-                    {formatNumberToMoney(transaction.amount)}
+                    {formatNumberToCurrency(amount, 1)}
                 </span>
                 <span> → </span>
-                <a href={`/balances/${balance.id}`}>{balance.name}</a>
+                <Link href={`/balances/${balance?.id}`}>{balance?.name}</Link>
             </p>
         </div>
     );
-};
+}
