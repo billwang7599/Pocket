@@ -42,7 +42,7 @@ export const getChildBalances = async (
 export const getUserTotal = async (userId: string): Promise<number> => {
     try {
         const balances = await prisma.balance.findMany({
-            where: { userId },
+            where: { userId, active: true },
         });
         const total = balances.reduce(
             (acc, balance) => acc + balance.amount,
@@ -80,6 +80,7 @@ export async function getBalanceTotal(
             where: {
                 userId,
                 parentId: balanceId,
+                active: true,
             },
         });
 
@@ -310,6 +311,50 @@ export const renameBalance = async (
         return true;
     } catch (error) {
         console.error(`Error renaming balance ${balanceId}:`, error);
+        throw error;
+    }
+};
+
+/**
+ * Activate a balance
+ */
+export const toggleBalance = async (
+    userId: string,
+    balanceId: string,
+    active: boolean,
+): Promise<boolean> => {
+    try {
+        const balance = await prisma.balance.findUnique({
+            where: {
+                id: balanceId,
+                userId,
+            },
+        });
+
+        if (!balance) {
+            throw new Error(`Balance ${balanceId} not found`);
+        }
+
+        await prisma.balance.update({
+            where: {
+                id: balanceId,
+                userId,
+            },
+            data: {
+                active,
+                updatedAt: new Date(),
+            },
+        });
+
+        // Revalidate relevant paths
+        if (balance.parentId) {
+            revalidatePath(`/balances/${balance.parentId}`);
+        }
+        revalidatePath(`/balances/${balanceId}`);
+
+        return true;
+    } catch (error) {
+        console.error(`Error activating balance ${balanceId}:`, error);
         throw error;
     }
 };

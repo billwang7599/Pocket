@@ -1,7 +1,7 @@
 "use server";
-import { getTopBalances } from "@/actions/balanceActions";
+import { getTopBalances, getUserTotal } from "@/actions/balanceActions";
 import { getBalanceTransactions } from "@/actions/transactionActions";
-import { balanceTotalMapping } from "@/lib/utils";
+// import { balanceTotalMapping } from "@/lib/utils";
 import { BalanceFormPopupButton } from "@/components/buttons/balance-form-popup-button";
 import { TransactionFormPopupButton } from "@/components/buttons/transaction-form-popup-button";
 import { BalanceTransferPopupButton } from "@/components/buttons/balance-transfer-popup-button";
@@ -20,12 +20,8 @@ export default async function DashboardPage() {
             a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1,
         ),
     );
-    const balanceTotals = await balanceTotalMapping(user.id, topBalances);
     const transactions = await getBalanceTransactions(user.id);
-    const netWorth = topBalances.reduce(
-        (acc, bal) => acc + balanceTotals[bal.id],
-        0,
-    );
+    const netWorth = await getUserTotal(user.id);
 
     return (
         <div className="flex flex-col gap-4">
@@ -36,15 +32,9 @@ export default async function DashboardPage() {
                 </h1>
             </div>
             <div className="flex flex-row gap-4 mb-4">
-                <BalanceFormPopupButton
-                    userId={JSON.parse(JSON.stringify(user.id))}
-                />
-                <TransactionFormPopupButton
-                    userId={JSON.parse(JSON.stringify(user.id))}
-                />
-                <BalanceTransferPopupButton
-                    userId={JSON.parse(JSON.stringify(user.id))}
-                />
+                <BalanceFormPopupButton userId={user.id} />
+                <TransactionFormPopupButton userId={user.id} />
+                <BalanceTransferPopupButton userId={user.id} />
             </div>
             {topBalances.length == 0 ? (
                 <div className="text-center">

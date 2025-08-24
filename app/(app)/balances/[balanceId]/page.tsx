@@ -15,6 +15,7 @@ import { InputBalanceTitle } from "@/components/input-balance-title";
 import { formatNumberToMoney } from "@/lib/utils";
 import Link from "next/link";
 import { getUserbyAuth0Id } from "@/actions/userActions";
+import { ToggleBalanceButton } from "@/components/buttons/toggle-balance-button";
 
 interface BalancePageProps {
     params: Promise<{ balanceId: string }>;
@@ -46,13 +47,18 @@ export default async function BalancePage({ params }: BalancePageProps) {
             >
                 Back
             </Link>
-            <div className="mb-8 mt-4">
+            <div className="my-4 flex flex-col">
                 <InputBalanceTitle balance={balance} />
-                <h1 className="text-5xl font-thin">
-                    {formatNumberToMoney(total, "USD")}
-                </h1>
+                <div className="flex flex-row items-center justify-between">
+                    <h1 className="text-5xl font-thin">
+                        {formatNumberToMoney(total, "USD")}
+                    </h1>
+                </div>
+                <div className="mt-2">
+                    <ToggleBalanceButton userId={user.id} balance={balance} />
+                </div>
             </div>
-            <div className="flex flex-row flex-wrap gap-4 w-full mb-4">
+            <div className="flex flex-row flex-wrap gap-4 w-full my-4">
                 <BalanceFormPopupButton userId={user.id} parentId={balanceId} />
                 <TransactionFormPopupButton
                     userId={user.id}
