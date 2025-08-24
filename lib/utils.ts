@@ -40,14 +40,3 @@ export const formatNumberToMoney = (number: number, currency: string) => {
         currency,
     }).format(number);
 };
-
-/**
- * Format a number as currency using currency ID
- */
-export const formatNumberToCurrency = (amount: number, currencyId: number) => {
-    const currency = getCurrencyById(currencyId);
-    return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: currency.code,
-    }).format(amount);
-};

@@ -4,7 +4,7 @@ import { Balance } from "@/lib/generated/prisma";
 import { getAllBalances } from "@/actions/balanceActions";
 import Loading from "@/components/loading";
 import { useState, useEffect } from "react";
-import { formatNumberToCurrency } from "@/lib/utils";
+import { formatNumberToMoney } from "@/lib/utils";
 
 interface NewBalanceTransferFormProps {
     userId: string;
@@ -60,7 +60,7 @@ export function NewBalanceTransferForm({
                 ? balance.amount
                 : Number(balance.amount);
 
-        return formatNumberToCurrency(amount, balance.currencyId);
+        return formatNumberToMoney(amount, "USD");
     };
 
     // Handle form submission

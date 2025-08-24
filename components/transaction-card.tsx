@@ -1,7 +1,7 @@
 "use server";
 import { getBalance } from "@/actions/balanceActions";
 import { Transaction } from "@/lib/generated/prisma";
-import { formatNumberToCurrency } from "@/lib/utils";
+import { formatNumberToMoney } from "@/lib/utils";
 import Link from "next/link";
 
 export async function TransactionCard({
@@ -41,7 +41,7 @@ export async function TransactionCard({
                         transaction.type === "INCOME" ? "" : "text-red-500"
                     }
                 >
-                    {formatNumberToCurrency(amount, 1)}
+                    {formatNumberToMoney(amount, "USD")}
                 </span>
                 <span> → </span>
                 <Link href={`/balances/${balance?.id}`}>{balance?.name}</Link>

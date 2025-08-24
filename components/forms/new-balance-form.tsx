@@ -13,26 +13,26 @@ export function NewBalanceForm(props: NewBalanceFormProps) {
 
     const onFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault(); // Prevent default browser form submission (page reload)
-        const form = event.currentTarget;
+        // const form = event.currentTarget;
 
         const userId = props.userId;
         const balanceName = name.trim();
         const parentId = props.parentId;
         const amount = 0;
-        const currencyId = parseInt(form.currency.value, 10);
+        // const currencyId = parseInt(form.currency.value, 10);
 
         // clear form
         event.currentTarget.reset();
 
         if (!parentId) {
-            await createBalance(userId, balanceName, null, amount, currencyId);
+            await createBalance(userId, balanceName, null, amount, 1); // usd
         } else {
             await createBalance(
                 userId,
                 balanceName,
                 parentId,
                 amount,
-                currencyId,
+                1, // USD
             );
         }
 
@@ -42,12 +42,7 @@ export function NewBalanceForm(props: NewBalanceFormProps) {
         }
     };
 
-    const CURRENCIES = [
-        { id: 1, code: "USD", name: "US Dollar" },
-        { id: 2, code: "EUR", name: "Euro" },
-        { id: 3, code: "GBP", name: "British Pound" },
-        { id: 4, code: "JPY", name: "Japanese Yen" },
-    ];
+    // const CURRENCIES = [{ id: 1, code: "USD", name: "US Dollar" }];
     return (
         <form
             onSubmit={onFormSubmit}
@@ -64,7 +59,7 @@ export function NewBalanceForm(props: NewBalanceFormProps) {
                     value={name}
                 />
             </label>
-            <label className="flex flex-col gap-2">
+            {/*<label className="flex flex-col gap-2">
                 <span className="text-sm font-medium text-gray-700">
                     Currency
                 </span>
@@ -80,7 +75,7 @@ export function NewBalanceForm(props: NewBalanceFormProps) {
                         </option>
                     ))}
                 </select>
-            </label>
+            </label>*/}
 
             <button
                 type="submit"

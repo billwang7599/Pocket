@@ -32,7 +32,7 @@ export default async function DashboardPage() {
             <div className="my-16">
                 <h3 className="text-4xl font-bold">Net Worth</h3>
                 <h1 className="text-5xl font-thin">
-                    {formatNumberToMoney(netWorth, "CAD")}
+                    {formatNumberToMoney(netWorth, "USD")}
                 </h1>
             </div>
             <div className="flex flex-row gap-4 mb-4">

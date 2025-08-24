@@ -1,3 +1,4 @@
+"use server";
 import {
     getBalance,
     getBalanceTotal,
@@ -11,7 +12,7 @@ import { TransactionFormPopupButton } from "@/components/buttons/transaction-for
 import { redirect } from "next/navigation";
 import { DeleteBalanceButton } from "@/components/buttons/delete-balance-button";
 import { InputBalanceTitle } from "@/components/input-balance-title";
-// import { formatNumberToCurrency } from "@/lib/utils";
+import { formatNumberToMoney } from "@/lib/utils";
 import Link from "next/link";
 import { getUserbyAuth0Id } from "@/actions/userActions";
 
@@ -46,10 +47,10 @@ export default async function BalancePage({ params }: BalancePageProps) {
                 Back
             </Link>
             <div className="mb-8 mt-4">
-                <InputBalanceTitle
-                    balance={JSON.parse(JSON.stringify(balance))}
-                />
-                <h1 className="text-5xl font-thin">${total}</h1>
+                <InputBalanceTitle balance={balance} />
+                <h1 className="text-5xl font-thin">
+                    {formatNumberToMoney(total, "USD")}
+                </h1>
             </div>
             <div className="flex flex-row flex-wrap gap-4 w-full mb-4">
                 <BalanceFormPopupButton userId={user.id} parentId={balanceId} />
@@ -62,9 +63,7 @@ export default async function BalancePage({ params }: BalancePageProps) {
             <div className="grid grid-cols-2 gap-4">
                 {children.map((balance) => (
                     <div key={balance.id}>
-                        <BalanceCard
-                            balance={JSON.parse(JSON.stringify(balance))}
-                        />
+                        <BalanceCard balance={balance} />
                     </div>
                 ))}
             </div>
@@ -72,11 +71,7 @@ export default async function BalancePage({ params }: BalancePageProps) {
                 <h2 className="text-2xl font-bold">Transactions</h2>
                 {transactions.map((transaction) => (
                     <div key={transaction.id}>
-                        <TransactionCard
-                            transaction={JSON.parse(
-                                JSON.stringify(transaction),
-                            )}
-                        />
+                        <TransactionCard transaction={transaction} />
                     </div>
                 ))}
             </div>
