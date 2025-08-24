@@ -96,10 +96,9 @@ export async function getBalanceTotal(
         );
 
         // If current balance is inactive, only sum children and don't include this balance's amount
-        const currentAmount = currentBalance.active ? currentBalance.amount : 0;
         const total = childTotals.reduce(
             (acc, curr) => acc + curr,
-            currentAmount,
+            currentBalance.amount,
         );
 
         return total;
