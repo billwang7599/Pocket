@@ -6,7 +6,7 @@ export default async function ProtectedLayout({
 }) {
     return (
         <div>
-            <div className="m-8 md:m-16">{children}</div>
+            <div className="m-8 my-16 md:mx-64">{children}</div>
         </div>
     );
 }
