@@ -3,7 +3,7 @@ Budget app for your everyday needs
 
 <a href="https://pocket.billwang.dev/">
 Go to app.
-</a>
+</a> -- On hiatus. Supabase put this project to sleep :(
 
 # Things to work on
 - Discord/Telegram bot for image/receipt/query processing
